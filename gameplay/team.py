@@ -1,6 +1,7 @@
 from typing import List, Dict
 
 from gameplay.player import Player
+from infrastructure.bounds import Bounds
 from infrastructure.event import Event
 from infrastructure.vector2 import Vector2
 
@@ -19,7 +20,9 @@ class Team:
         if unique_id not in self.players:
             self.players[unique_id] = player
             self.on_player_added.invoke(player)
-            player.on_position_changed.add_handler(self.extend_visible_positions)
+            self.extend_visible_positions(player.get_position(), player.get_line_of_sight())
+            player.on_position_changed.add_handler(
+                lambda old_pos, new_pos: self.extend_visible_positions(new_pos, player.get_line_of_sight()))
             return True
         else:
             print(f"Player with id '{unique_id}' is already in the team.")
@@ -38,10 +41,14 @@ class Team:
     def get_players(self) -> List[Player]:
         return list(self.players.values())
 
-    def extend_visible_positions(self, old_position: Vector2, new_position: Vector2):
-        # Logic to extend visible positions based on player's line of sight
-        # For example, adding the line_of_sight positions to the team's visible_positions set
-        self.visible_positions.update(line_of_sight)
+    def extend_visible_positions(self, new_position: Vector2, line_of_sight: int):
+        revealed = Bounds(
+            min_x=int(new_position.x) - line_of_sight,
+            max_x=int(new_position.x) + line_of_sight,
+            min_y=int(new_position.y) - line_of_sight,
+            max_y=int(new_position.y) + line_of_sight)
+
+        revealed.iterate_through_points(lambda x, y: self.visible_positions.add(Vector2(x, y)))
 
     def get_visible_positions(self) -> set[Vector2]:
         return self.visible_positions
