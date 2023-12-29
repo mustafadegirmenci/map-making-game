@@ -1,44 +1,61 @@
-from typing import Dict, Optional, List
-from infrastructure.gameobject import GameObject, Event
-from infrastructure.vector2 import Vector2
+from typing import Dict
+
+from gameplay.common.explosive import Explosive
+from gameplay.player import Player
+from infrastructure.event import Event
 
 
 class Map:
     def __init__(self):
-        self.game_objects: Dict[str, GameObject] = {}
-        self.on_object_added = Event()
-        self.on_object_removed = Event()
+        self.players: Dict[str, Player] = {}
+        self.explosives: Dict[str, Explosive] = {}
 
-    def add_object(self, game_obj: GameObject, position: Optional['Vector2'] = None) -> bool:
-        unique_id = game_obj.get_unique_id()
-        if unique_id not in self.game_objects:
-            if position:
-                game_obj.set_position(position)
-            self.game_objects[unique_id] = game_obj
-            self.on_object_added.invoke(game_obj)
+        self.on_player_joined = Event()
+        self.on_player_left = Event()
+        self.on_explosive_added = Event()
+
+    def add_player(self, player: Player) -> bool:
+
+        def handle_player_movement(moved_player: Player):
+            for explosive in self.explosives.values():
+                if explosive.position == moved_player.get_position():
+                    explosive.activate()
+
+        def handle_player_drop(dropped_explosive: Explosive):
+            self.add_explosive(dropped_explosive)
+
+        unique_id = player.get_unique_id()
+        if unique_id in self.players:
+            print(f"Player with id '{unique_id}' already exists in the map.")
+            return False
+        self.players[unique_id] = player
+        self.on_player_joined.invoke(player)
+
+        player.on_moved.add_handler(lambda: handle_player_movement(player))
+        player.on_dropped.add_handler(lambda dropped_explosive: handle_player_drop(dropped_explosive))
+        player.on_died.add_handler(lambda: self.remove_player(player.get_unique_id()))
+        return True
+
+    def remove_player(self, unique_id: str) -> bool:
+        if unique_id in self.players:
+            left_player = self.players.pop(unique_id)
+            self.on_player_left.invoke(left_player)
             return True
         else:
-            print(f"Object with id '{unique_id}' already exists in the map.")
+            print(f"No player with id '{unique_id}' found in the map.")
             return False
 
-    def remove_object(self, unique_id: str) -> bool:
-        if unique_id in self.game_objects:
-            removed_obj = self.game_objects.pop(unique_id)
-            self.on_object_removed.invoke(removed_obj)
-            return True
-        else:
-            print(f"No object with id '{unique_id}' found in the map.")
+    def add_explosive(self, explosive: Explosive) -> bool:
+
+        def handle_explosion(exploded_explosive: Explosive):
+            for player in self.players.values():
+                exploded_explosive.apply_explosion_to_target(player)
+
+        unique_id = explosive.get_unique_id()
+        if unique_id in self.explosives:
+            print(f"Explosive with id '{unique_id}' already exists in the map.")
             return False
-
-    def get_object_by_id(self, unique_id: str) -> Optional[GameObject]:
-        return self.game_objects.get(unique_id, None)
-
-    def get_objects_at_position(self, position: Vector2) -> List[GameObject]:
-        objects_at_position = []
-        for obj in self.game_objects.values():
-            if obj.position == position:
-                objects_at_position.append(obj)
-        return objects_at_position
-
-    def get_all_objects(self) -> List[GameObject]:
-        return list(self.game_objects.values())
+        self.explosives[unique_id] = explosive
+        self.on_explosive_added.invoke(explosive)
+        explosive.on_exploded.add_handler(lambda: handle_explosion(explosive))
+        return True
