@@ -1,46 +1,46 @@
 from typing import Optional
 
+from gameplay.common.damageable import Damageable
+from gameplay.common.explosive import Explosive
+from gameplay.common.gameobject import GameObject
 from infrastructure.bounds import Bounds
 from infrastructure.direction import Direction
-from infrastructure.gameobject import GameObject
+from infrastructure.event import Event
 from infrastructure.vector2 import Vector2
 
 
-class Player(GameObject):
-    def __init__(self, name: str, line_of_sight: int, position: Optional['Vector2'] = None):
-        super().__init__(name=name, position=position)
-        self.line_of_sight = line_of_sight
+class Player(Damageable, GameObject):
+    def __init__(self,
+                 name: str,
+                 position: Optional[Vector2] = Vector2(0, 0),
+                 vision_range: Optional[int] = 2,
+                 health: Optional[int] = 100,
+                 ):
+        Damageable.__init__(self, health=health)
+        GameObject.__init__(self, name=name, position=position)
+        self.vision_range = vision_range
+        self.stunned = False
+
+        self.on_dropped = Event()
+
+    def get_vision_range(self) -> int:
+        return self.vision_range
+
+    def stun(self):
+        self.stunned = True
+
+    def remove_stun(self):
+        self.stunned = False
 
     def move(self, direction: Direction, bounds: Optional[Bounds] = None) -> bool:
-        new_x, new_y = self.position.x, self.position.y
+        if self.stunned:
+            return False
+        return GameObject.move(self, direction, bounds)
 
-        if direction == Direction.NORTH:
-            new_y += 1
-        elif direction == Direction.SOUTH:
-            new_y -= 1
-        elif direction == Direction.EAST:
-            new_x += 1
-        elif direction == Direction.WEST:
-            new_x -= 1
-        elif direction == Direction.NORTHEAST:
-            new_x += 1
-            new_y += 1
-        elif direction == Direction.NORTHWEST:
-            new_x -= 1
-            new_y += 1
-        elif direction == Direction.SOUTHEAST:
-            new_x += 1
-            new_y -= 1
-        elif direction == Direction.SOUTHWEST:
-            new_x -= 1
-            new_y -= 1
-
-        if bounds and not bounds.is_within_bounds(new_x, new_y):
-            print("Cannot move. New position is outside the bounds.")
+    def drop(self, explosive: Explosive) -> bool:
+        if self.stunned:
             return False
 
-        self.set_position(Vector2(new_x, new_y))
+        explosive.set_position(self.position)
+        self.on_dropped.invoke(explosive)
         return True
-
-    def get_line_of_sight(self) -> int:
-        return self.line_of_sight
