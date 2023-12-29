@@ -2,10 +2,10 @@ import uuid
 from abc import ABC
 from typing import Optional
 
-from infrastructure.bounds import Bounds
-from infrastructure.direction import Direction
-from infrastructure.event import Event
-from infrastructure.vector2 import Vector2
+from server.infrastructure.bounds import Bounds
+from server.infrastructure.direction import Direction
+from server.infrastructure.event import Event
+from server.infrastructure.vector2 import Vector2
 
 
 class GameObject(ABC):

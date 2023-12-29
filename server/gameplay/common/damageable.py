@@ -1,6 +1,6 @@
 from abc import ABC
 
-from infrastructure.event import Event
+from server.infrastructure.event import Event
 
 
 class Damageable(ABC):

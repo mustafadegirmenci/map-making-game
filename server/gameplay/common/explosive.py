@@ -2,10 +2,10 @@ import threading
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from gameplay.common.gameobject import GameObject
-from gameplay.player import Player
-from infrastructure.event import Event
-from infrastructure.vector2 import Vector2
+from server.gameplay.common.gameobject import GameObject
+from server.gameplay.player import Player
+from server.infrastructure.event import Event
+from server.infrastructure.vector2 import Vector2
 
 
 class Explosive(GameObject, ABC):

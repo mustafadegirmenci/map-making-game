@@ -1,12 +1,12 @@
 from typing import Optional
 
-from gameplay.common.damageable import Damageable
-from gameplay.common.explosive import Explosive
-from gameplay.common.gameobject import GameObject
-from infrastructure.bounds import Bounds
-from infrastructure.direction import Direction
-from infrastructure.event import Event
-from infrastructure.vector2 import Vector2
+from server.gameplay.common.damageable import Damageable
+from server.gameplay.common.explosive import Explosive
+from server.gameplay.common.gameobject import GameObject
+from server.infrastructure.bounds import Bounds
+from server.infrastructure.direction import Direction
+from server.infrastructure.event import Event
+from server.infrastructure.vector2 import Vector2
 
 
 class Player(Damageable, GameObject):

@@ -1,8 +1,8 @@
 from typing import Dict
 
-from gameplay.common.explosive import Explosive
-from gameplay.player import Player
-from infrastructure.event import Event
+from server.gameplay.common.explosive import Explosive
+from server.gameplay.player import Player
+from server.infrastructure.event import Event
 
 
 class Map:

@@ -1,9 +1,9 @@
 import threading
 from typing import Optional
 
-from gameplay.common.explosive import Explosive
-from gameplay.player import Player
-from infrastructure.vector2 import Vector2
+from server.gameplay.common.explosive import Explosive
+from server.gameplay.player import Player
+from server.infrastructure.vector2 import Vector2
 
 
 class Freezer(Explosive):

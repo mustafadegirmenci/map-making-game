@@ -1,9 +1,9 @@
 from typing import List, Dict
 
-from gameplay.player import Player
-from infrastructure.bounds import Bounds
-from infrastructure.event import Event
-from infrastructure.vector2 import Vector2
+from server.gameplay.player import Player
+from server.infrastructure.bounds import Bounds
+from server.infrastructure.event import Event
+from server.infrastructure.vector2 import Vector2
 
 
 class Team:
