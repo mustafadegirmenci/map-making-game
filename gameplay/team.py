@@ -20,9 +20,9 @@ class Team:
         if unique_id not in self.players:
             self.players[unique_id] = player
             self.on_player_added.invoke(player)
-            self.extend_visible_positions(player.get_position(), player.get_line_of_sight())
-            player.on_position_changed.add_handler(
-                lambda old_pos, new_pos: self.extend_visible_positions(new_pos, player.get_line_of_sight()))
+            self.extend_visible_positions(player.get_position(), player.get_vision_range())
+            player.on_moved.add_handler(
+                lambda: self.extend_visible_positions(player.get_position(), player.get_vision_range()))
             return True
         else:
             print(f"Player with id '{unique_id}' is already in the team.")
@@ -31,7 +31,7 @@ class Team:
     def remove_player(self, unique_id: str) -> bool:
         if unique_id in self.players:
             removed_player = self.players.pop(unique_id)
-            removed_player.on_position_changed.remove_handler(self.extend_visible_positions)
+            removed_player.on_moved.remove_handler(self.extend_visible_positions)
             self.on_player_removed.invoke(removed_player)
             return True
         else:
