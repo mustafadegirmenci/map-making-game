@@ -43,10 +43,10 @@ class Team:
 
     def extend_visible_positions(self, new_position: Vector2, line_of_sight: int):
         revealed = Bounds(
-            min_x=int(new_position.x) - line_of_sight,
-            max_x=int(new_position.x) + line_of_sight,
-            min_y=int(new_position.y) - line_of_sight,
-            max_y=int(new_position.y) + line_of_sight)
+            min_x=new_position.x - line_of_sight,
+            max_x=new_position.x + line_of_sight,
+            min_y=new_position.y - line_of_sight,
+            max_y=new_position.y + line_of_sight)
 
         revealed.iterate_through_points(lambda x, y: self.visible_positions.add(Vector2(x, y)))
 
