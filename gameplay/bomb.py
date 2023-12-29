@@ -22,4 +22,3 @@ class Bomb(Explosive):
 
     def apply_explosion_to_target(self, target: Player):
         target.take_damage(self.explosion_damage)
-        self.on_exploded.invoke()

@@ -25,4 +25,3 @@ class Freezer(Explosive):
         target.stun()
         timer_thread = threading.Timer(self.stun_duration, target.remove_stun)
         timer_thread.start()
-        self.on_exploded.invoke()
