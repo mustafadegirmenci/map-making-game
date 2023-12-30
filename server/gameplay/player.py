@@ -22,6 +22,7 @@ class Player(Damageable, GameObject):
         self.stunned = False
 
         self.on_dropped = Event()
+        self.current_map = None
 
     def get_vision_range(self) -> int:
         return self.vision_range
@@ -35,7 +36,21 @@ class Player(Damageable, GameObject):
     def move(self, direction: Direction, bounds: Optional[Bounds] = None) -> bool:
         if self.stunned:
             return False
-        return GameObject.move(self, direction, bounds)
+
+        if self.current_map is None:
+            return False
+
+        print(f'mapwidth = {self.current_map.width}')
+        print(f'mapheight = {self.current_map.height}')
+
+        map_bounds = Bounds(
+            min_x=0,
+            max_x=int(self.current_map.width),
+            min_y=0,
+            max_y=int(self.current_map.height)
+        )
+
+        return GameObject.move(self, direction, map_bounds)
 
     def drop(self, explosive: Explosive) -> bool:
         if self.stunned:

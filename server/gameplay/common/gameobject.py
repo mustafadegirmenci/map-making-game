@@ -60,12 +60,3 @@ class GameObject(ABC):
 
         self.set_position(Vector2(new_x, new_y))
         return True
-
-    def get_unique_id(self) -> str:
-        return self.unique_id
-
-    def set_name(self, new_name: str):
-        self.name = new_name
-
-    def get_name(self) -> str:
-        return self.name

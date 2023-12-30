@@ -2,26 +2,26 @@ from enum import Enum
 
 
 class Direction(Enum):
-    NORTH = 'N'
-    SOUTH = 'S'
-    EAST = 'E'
-    WEST = 'W'
-    NORTHEAST = 'NE'
-    NORTHWEST = 'NW'
-    SOUTHEAST = 'SE'
-    SOUTHWEST = 'SW'
+    NORTH = 'NORTH'
+    SOUTH = 'SOUTH'
+    EAST = 'EAST'
+    WEST = 'WEST'
+    NORTHEAST = 'NORTHEAST'
+    NORTHWEST = 'NORTHWEST'
+    SOUTHEAST = 'SOUTHEAST'
+    SOUTHWEST = 'SOUTHWEST'
 
     @classmethod
     def from_string(cls, direction_str: str) -> 'Direction':
         str_to_dir = {
-            'N': Direction.NORTH,
-            'S': Direction.SOUTH,
-            'E': Direction.EAST,
-            'W': Direction.WEST,
-            'NE': Direction.NORTHEAST,
-            'NW': Direction.NORTHWEST,
-            'SE': Direction.SOUTHEAST,
-            'SW': Direction.SOUTHWEST
+            'NORTH': Direction.NORTH,
+            'SOUTH': Direction.SOUTH,
+            'EAST': Direction.EAST,
+            'WEST': Direction.WEST,
+            'NORTHEAST': Direction.NORTHEAST,
+            'NORTHWEST': Direction.NORTHWEST,
+            'SOUTHEAST': Direction.SOUTHEAST,
+            'SOUTHWEST': Direction.SOUTHWEST
         }
         return str_to_dir.get(direction_str.upper(), None)
 

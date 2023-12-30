@@ -16,13 +16,13 @@ class Team:
         self.on_player_removed = Event()
 
     def add_player(self, player: Player) -> bool:
-        unique_id = player.get_unique_id()
+        unique_id = player.unique_id
         if unique_id not in self.players:
             self.players[unique_id] = player
             self.on_player_added.invoke(player)
-            self.extend_visible_positions(player.get_position(), player.get_vision_range())
+            self.extend_visible_positions(player)
             player.on_moved.add_handler(
-                lambda: self.extend_visible_positions(player.get_position(), player.get_vision_range()))
+                lambda: self.extend_visible_positions(player))
             return True
         else:
             print(f"Player with id '{unique_id}' is already in the team.")
@@ -41,14 +41,26 @@ class Team:
     def get_players(self) -> List[Player]:
         return list(self.players.values())
 
-    def extend_visible_positions(self, new_position: Vector2, line_of_sight: int):
-        revealed = Bounds(
-            min_x=new_position.x - line_of_sight,
-            max_x=new_position.x + line_of_sight,
-            min_y=new_position.y - line_of_sight,
-            max_y=new_position.y + line_of_sight)
+    def extend_visible_positions(self, player: Player):
+        def reveal(x, y):
+            if player.current_map is not None:
+                map_bounds = Bounds(
+                    min_x=0,
+                    max_x=int(player.current_map.width),
+                    min_y=0,
+                    max_y=int(player.current_map.height))
+                if map_bounds.is_within_bounds(x, y):
+                    self.visible_positions.add(Vector2(x, y))
+            else:
+                self.visible_positions.add(Vector2(x, y))
 
-        revealed.iterate_through_points(lambda x, y: self.visible_positions.add(Vector2(x, y)))
+        revealed = Bounds(
+            min_x=player.position.x - player.vision_range,
+            max_x=player.position.x + player.vision_range,
+            min_y=player.position.y - player.vision_range,
+            max_y=player.position.y + player.vision_range)
+
+        revealed.iterate_through_points(reveal)
 
     def get_visible_positions(self) -> set[Vector2]:
         return self.visible_positions

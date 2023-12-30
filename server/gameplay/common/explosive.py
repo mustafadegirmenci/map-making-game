@@ -3,7 +3,6 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from server.gameplay.common.gameobject import GameObject
-from server.gameplay.player import Player
 from server.infrastructure.event import Event
 from server.infrastructure.vector2 import Vector2
 
@@ -30,5 +29,5 @@ class Explosive(GameObject, ABC):
         return True
 
     @abstractmethod
-    def apply_explosion_to_target(self, target: Player):
+    def apply_explosion_to_target(self, target):
         pass
