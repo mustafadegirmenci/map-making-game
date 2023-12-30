@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game</title>
+    <style>
+        .gamepad {
+            display: grid;
+            gap: 1px;
+            grid-template-columns: repeat(3, 1fr);
+            width: fit-content;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+        }
+
+        .direction-button {
+            width: 50px;
+            height: 50px;
+            font-size: 16px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <svg width="{{ svg_width }}" height="{{ svg_height }}">
+        {% for circle in circle_list %}
+            <text x="{{ circle.x }}" y="{{ circle.y }}" fill="{{ circle.color }}" font-size="10px">{{ circle.label }}</text>
+            <circle cx="{{ circle.x }}" cy="{{ circle.y }}" r="{{ circle.size }}" fill="{{ circle.color }}"/>
+        {% endfor %}
+    </svg>
+
+    <div>
+        <form class="gamepad" method="post">
+            {% csrf_token %}
+            <button class="direction-button" type="submit" name="direction" value="southwest">↖</button>
+            <button class="direction-button" type="submit" name="direction" value="south">↑</button>
+            <button class="direction-button" type="submit" name="direction" value="southeast">↗</button>
+            <button class="direction-button" type="submit" name="direction" value="west">←</button>
+            <button class="direction-button" type="submit" name="drop" value="drop">DROP</button>
+            <button class="direction-button" type="submit" name="direction" value="east">→</button>
+            <button class="direction-button" type="submit" name="direction" value="northwest">↙</button>
+            <button class="direction-button" type="submit" name="direction" value="north">↓</button>
+            <button class="direction-button" type="submit" name="direction" value="northeast">↘</button>
+        </form>
+    </div>
+
+</body>
+</html>
