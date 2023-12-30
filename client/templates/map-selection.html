@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Map Selection</title>
+    <!-- Link to Font Awesome (Add this line if you're using Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Custom styling for the refresh icon button */
+        .refresh-icon {
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Create</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label for="width">Width:</label>
+        <input type="number" id="width" name="width" required>
+
+        <label for="height">Height:</label>
+        <input type="number" id="height" name="height" required>
+
+        <button type="submit" name="create_map">Create Map</button>
+    </form>
+
+    <h2>Join</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="list_maps" class="refresh-icon">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+    </form>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label for="team-name">Team Name:</label>
+        <input type="text" id="team-name" name="team-name" required>
+
+        <label for="maps-dropdown">Map:</label>
+        <select id="maps-dropdown" name="selected-map">
+            {% for map_item in maps_response %}
+                <option value="{{ map_item }}">{{ map_item }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="join">Join</button>
+    </form>
+</body>
+</html>
